@@ -11,7 +11,7 @@ from adafruit_ms8607 import MS8607  # Import MS8607 library
 # Set some parameters used for shapes and text
 BORDER = 20
 FONTSCALE = 2
-BACKGROUND_COLOR = 0x000000  # Black
+BACKGROUND_COLOR = 0xAA0000  # Black
 FOREGROUND_COLOR = 0xAA0000  # Purple
 TEXT_COLOR = 0xFFFFFF
 
@@ -26,7 +26,7 @@ sensor = MS8607(i2c)  # Create MS8607 sensor object
 spi = board.SPI()
 tft_cs = board.D2
 tft_dc = board.D3
-
+temp = AnalogIn(board.A0)
 display_bus = FourWire(spi, command=tft_dc, chip_select=tft_cs)
 display = ST7789(
     display_bus, rotation=270, width=240, height=135, rowstart=40, colstart=53
@@ -56,27 +56,28 @@ splash.append(inner_sprite)
 
 # Counter for cycling through Pressure, Humidity, and Temperature
 counter = 0
-
+maxxed = 65535
+vlt = 0
 # Main loop to display sensor data
 while True:
     # Read values from the MS8607 sensor
-    temperature_C = sensor.temperature  # Temperature in Celsius
     pressure = sensor.pressure  # Pressure in hPa
     humidity = sensor.relative_humidity  # Humidity in %
-
- 
-vlt = temp.value / maxxed * 3.3
+    vlt = temp.value / maxxed * 3.3
     temp_C = (vlt - .5) *100
     temp_F = (9/5) * temp_C +32
     vlt = round(temp_F,2)
+    print(temp_F)
+     
+
 
  
     if counter == 0:
         text = "Pressure: %.2f hPa" % pressure
     elif counter == 1:
-        text = "Humidity: %.2f %% rH" % humidity
+        text = "Humidity: %.2f %% " % humidity
     elif counter == 2:
-        text = "Temperature: %.2f F" % temp_F
+        text = str (vlt) + " F"
 
    
     text_area = label.Label(terminalio.FONT, text=text, color=TEXT_COLOR)
