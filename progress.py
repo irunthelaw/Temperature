@@ -63,6 +63,8 @@ while True:
     # Read values from the MS8607 sensor
     pressure = sensor.pressure  # Pressure in hPa
     humidity = sensor.relative_humidity  # Humidity in %
+
+    #Temperature calculation.
     vlt = temp.value / maxxed * 3.3
     temp_C = (vlt - .5) *100
     temp_F = (9/5) * temp_C +32
@@ -71,7 +73,7 @@ while True:
      
 
 
- 
+ #Displays each of the values.
     if counter == 0:
         text = "Pressure: %.2f hPa" % pressure
     elif counter == 1:
@@ -82,7 +84,7 @@ while True:
    
     text_area = label.Label(terminalio.FONT, text=text, color=TEXT_COLOR)
 
-    
+    # size and location of text  
     text_width = text_area.bounding_box[2] * FONTSCALE
     text_group = displayio.Group(
         scale=FONTSCALE,
