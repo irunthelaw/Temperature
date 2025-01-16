@@ -1,3 +1,5 @@
+#F STRING PHT.TEMP
+
 import time
 import board
 import terminalio
