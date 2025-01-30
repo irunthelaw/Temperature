@@ -1,0 +1,56 @@
+#F STRING PHT.TEMP
+
+import time
+import board
+import terminalio
+import displayio
+from analogio import AnalogIn
+from adafruit_display_text import label
+from fourwire import FourWire
+from adafruit_st7789 import ST7789
+from adafruit_ms8607 import MS8607  # Import MS8607 library
+
+# Set some parameters used for shapes and text
+
+
+# Initialize I2C and the MS8607 sensor
+i2c = board.I2C()  # Initialize I2C bus
+sensor = MS8607(i2c)  # Create MS8607 sensor object
+
+# Set up SPI for the display
+
+temp = AnalogIn(board.A0)
+
+counter = 0
+maxxed = 65535
+vlt = 0
+# Main loop to display sensor data
+while True:
+    # Read values from the MS8607 sensor
+    pressure = sensor.pressure  # Pressure in hPa
+    humidity = sensor.relative_humidity  # Humidity in %
+
+    #Temperature calculation.
+    vlt = temp.value / maxxed * 3.3
+    temp_C = (vlt - .5) // 100``		
+    temp_F = (9/5) * temp_C +32
+    temp_F = int(temp_F * 100) / 100
+    vlt = round(temp_F,2)
+     
+
+ #Displays each of the values.
+    if counter == 0:
+        text = "Pressure: %.2f hPa" % pressure
+    elif counter == 1:
+        text = "Humidity: %.2f %% " % humidity
+    elif counter == 2:
+        text = str (vlt) + " F"
+
+    time.sleep(1)
+
+    # Increment the counter and reset it after reaching 3
+    counter += 1
+    if counter >= 3:
+        counter = 0
+        
+    print(pressure, vlt, humidity)
